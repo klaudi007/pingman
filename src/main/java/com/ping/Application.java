@@ -22,11 +22,13 @@ public class Application {
 
 //    private static int count = 0;
 
-    private static int initialDelay = 1;// second
+    private static int initialDelay = 2;// second
 
     private static int interval = 10;// second
 
     private static int pingTimeout = 2;// second
+
+    private static boolean verbose = false;
 
     private static List<Device> devices = new ArrayList<>();
 
@@ -50,9 +52,12 @@ public class Application {
 
             if(applicationParams.get("pingTimeout")!=null)
                 pingTimeout = Integer.parseInt(applicationParams.get("pingTimeout"));
+            if(applicationParams.get("verbose")!=null){
+                verbose = Boolean.parseBoolean(applicationParams.get("verbose"));
+            }
 
-            System.out.printf("Application params is => initialDelay : %d, interval : %d, pingTimout : %d %n%n",
-                    initialDelay, interval, pingTimeout);
+            System.out.printf("Application params is => initialDelay : %d, interval : %d, pingTimout : %d, verbose : %b %n%n",
+                    initialDelay, interval, pingTimeout, verbose);
 
         }catch (Exception ex){
             System.out.println("Exception on parsing custom initial params "+ex);
@@ -89,12 +94,7 @@ public class Application {
 //        System.out.println("=============== Application Running  ==================");
         try {
             for(Device device : devices){
-                DeviceService.sendPingRequest(device, pingTimeout);
-//                if(!device.isReachable()){
-//
-//                }else{
-//
-//                }
+                DeviceService.sendPingRequest(device, pingTimeout, verbose);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,16 +113,22 @@ public class Application {
 
         HashMap<String, String> params = new HashMap<>();
 
-        for (String arg: args) {
+        try{
+            for (String arg: args) {
 
-            String[] splitFromEqual = arg.split("=");
+                String[] splitFromEqual = arg.split("=");
 
-            String key = splitFromEqual[0].substring(2);
-            String value = splitFromEqual[1];
+                String key = splitFromEqual[0].substring(2);
+                String value = splitFromEqual[1];
 
-            params.put(key, value);
+                params.put(key, value);
 
+            }
+        }catch (Exception ex){
+            System.out.println("Exception on parsing application custom parameters -> Application will run with default parameters.");
         }
+
+
 
         return params;
     }

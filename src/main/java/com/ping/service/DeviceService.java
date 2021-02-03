@@ -28,19 +28,19 @@ public class DeviceService {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-    public static Device sendPingRequest(Device device, int timeoutInSecond) throws IOException {
+    public static Device sendPingRequest(Device device, int timeoutInSecond, boolean verbose) throws IOException {
 
 //        log.debug("Sending ping request to device :{}, ip :{}", device.getName(), device.getIp());
-
-//        System.out.printf("Sending ping request to device : %s, ip :%s%n", device.getName(), device.getIp());
 
         InetAddress inetAddress = InetAddress.getByName(device.getIp());
 
         String now = LocalDateTime.now().format(formatter);
 
+        StringBuilder consoleMessage = new StringBuilder();
+
         if(inetAddress.isReachable(timeoutInSecond*1000)){
 //            log.debug("Device :{}, ip :{} is reachable.", device.getName(), device.getIp());
-//            System.out.printf(ANSI_GREEN+"UP: %s, ip: %s, time: %s %n"+ANSI_RESET, device.getName(), device.getIp(), now);
+            consoleMessage.append(ANSI_GREEN).append("UP: ");
             if(!device.isReachable()) // checking previous status.
             {
                 device.setReachable(true);
@@ -51,13 +51,20 @@ public class DeviceService {
 
         }else{
 //            log.debug("Device :{}, ip :{} is NOT reachable.", device.getName(), device.getIp());
-//            System.out.printf(ANSI_RED + "DOWN: %s, ip: %s, time: %s %n"+ANSI_RESET, device.getName(), device.getIp(), now);
+            consoleMessage.append(ANSI_RED).append("DOWN: ");
             device.setReachable(false);
             if(!device.isResponsiblePersonNotified()){
                 failMsg(device, now);
                 device.setIssueFixed(false);
                 device.setResponsiblePersonNotified(true);
             }
+        }
+
+        if(verbose){
+            consoleMessage.append(device.getName())
+                    .append(", ip: ").append(device.getIp())
+                    .append(", time: ").append(now).append(ANSI_RESET);
+            System.out.println(consoleMessage);
         }
 
         return device;

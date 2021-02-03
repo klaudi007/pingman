@@ -25,15 +25,20 @@ java -jar PingMan-1.0-SNAPSHOT.jar
 ```
 ####Default parameters is
 ```
-initialDelay = 1;// second - after what second application will start
+initialDelay = 2;// second - after what second application will start
 interval = 10;// second - interval of pinging action
 pingTimeout = 2;// second
+verbose = false // false -> show only success(UP) and warning(DOWN) console messages, 
+//true -> additionally show every pinging result to defined devices.
 ```
 
 #### Running application with custom parameters.
 ```
-// go to application path and type
-java -jar PingMan-1.0-SNAPSHOT.jar --initialDelay=1 --interval=5 --pingTimeout=2
+// go to application path and type (you can customise how many params you like -> in this case app will use defaut value to not specified params.)
+// example:
+java -jar PingMan-1.0-SNAPSHOT.jar --initialDelay=5 --interval=5 --pingTimeout=2 --verbose=true
+// or
+java -jar PingMan-1.0-SNAPSHOT.jar --interval=5 --pingTimeout=2
 ```
 
 
