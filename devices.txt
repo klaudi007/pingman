@@ -1,0 +1,3 @@
+Kurdermir ATS1, 192.168.1.1
+Google ATS, 8.8.8.8
+Yevlax ATS3, 78.109.49.175
